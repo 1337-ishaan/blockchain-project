@@ -1,0 +1,51 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.17;
+
+import "./Escrow.sol";
+import "hardhat/console.sol";
+
+error DexAssembly__AlreadyApproved(address escrow);
+error DexAssembly_NoContractFound(address owner);
+
+contract EscrowFactory {
+    mapping(address => uint) private ownerToContractIndex;
+
+    Escrow[] private escrowArray;
+
+    modifier isExist() {
+        // * contracts indexes starts from 1 so if mapping returns 0 it means the contract does not exist associate with this address.
+        if (ownerToContractIndex[msg.sender] == 0) {
+            revert DexAssembly_NoContractFound(msg.sender);
+        }
+        _;
+    }
+
+    function createNewEscrowContract(
+        address _depositor,
+        address _beneficiary
+    ) external payable {
+        // * create escrow contract.
+        Escrow escrow = (new Escrow){value: msg.value}(
+            _depositor,
+            _beneficiary,
+            msg.sender
+        );
+        // * push the instance into array.
+        escrowArray.push(escrow);
+        // * map the index no of contract with arbiter address. Starting from index 1 onward because default value of uint is zero so this will help us later.
+        ownerToContractIndex[msg.sender] = escrowArray.length;
+    }
+
+    function approve() external isExist {
+        // * get the index of contract with arbiter address.
+        uint index = ownerToContractIndex[msg.sender];
+        // * get the contract from the escrow array.
+        Escrow escrow = escrowArray[index - 1];
+        // * call the approve of escrow contract with this instance.
+        // * check weather is it already approved or not.
+        if (escrow.isApproved()) {
+            revert DexAssembly__AlreadyApproved(address(escrow));
+        }
+        escrow.approve();
+    }
+}
