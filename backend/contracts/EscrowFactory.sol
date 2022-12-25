@@ -5,12 +5,23 @@ import "./Escrow.sol";
 import "hardhat/console.sol";
 
 error EscrowFactory__AlreadyApproved(address escrow);
+error EscrowFactory__EscrowContractExistWithThisAddress(address owner);
 error EscrowFactory__NoContractFound(address owner);
 
 contract EscrowFactory {
     mapping(address => uint) private ownerToContractIndex;
 
     Escrow[] private escrowArray;
+
+    modifier isCreated() {
+        // * contracts indexes starts from 1 so if mapping returns 0 it means the contract does not exist associate with this address.
+        if (ownerToContractIndex[msg.sender] != 0) {
+            revert EscrowFactory__EscrowContractExistWithThisAddress(
+                msg.sender
+            );
+        }
+        _;
+    }
 
     modifier isExist() {
         // * contracts indexes starts from 1 so if mapping returns 0 it means the contract does not exist associate with this address.
@@ -23,7 +34,7 @@ contract EscrowFactory {
     function createNewEscrowContract(
         address _depositor,
         address _beneficiary
-    ) external payable {
+    ) external payable isCreated {
         // * create escrow contract.
         Escrow escrow = (new Escrow){value: msg.value}(
             _depositor,
