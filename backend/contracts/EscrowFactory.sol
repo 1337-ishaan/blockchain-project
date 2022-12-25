@@ -4,8 +4,8 @@ pragma solidity ^0.8.17;
 import "./Escrow.sol";
 import "hardhat/console.sol";
 
-error DexAssembly__AlreadyApproved(address escrow);
-error DexAssembly_NoContractFound(address owner);
+error EscrowFactory__AlreadyApproved(address escrow);
+error EscrowFactory__NoContractFound(address owner);
 
 contract EscrowFactory {
     mapping(address => uint) private ownerToContractIndex;
@@ -15,7 +15,7 @@ contract EscrowFactory {
     modifier isExist() {
         // * contracts indexes starts from 1 so if mapping returns 0 it means the contract does not exist associate with this address.
         if (ownerToContractIndex[msg.sender] == 0) {
-            revert DexAssembly_NoContractFound(msg.sender);
+            revert EscrowFactory__NoContractFound(msg.sender);
         }
         _;
     }
@@ -44,7 +44,7 @@ contract EscrowFactory {
         // * call the approve of escrow contract with this instance.
         // * check weather is it already approved or not.
         if (escrow.isApproved()) {
-            revert DexAssembly__AlreadyApproved(address(escrow));
+            revert EscrowFactory__AlreadyApproved(address(escrow));
         }
         escrow.approve();
     }
