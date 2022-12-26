@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { ConnectButton } from "@web3uikit/web3";
 
 function App() {
-    return <div>hello world</div>;
+    return <ConnectButton />;
 }
 
 export default App;
