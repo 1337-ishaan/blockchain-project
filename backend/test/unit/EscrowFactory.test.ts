@@ -59,4 +59,18 @@ describe("EscrowFactory", () => {
                 .withArgs(arbiter.address);
         });
     });
+
+    describe("approve", async () => {
+        it("should throw error is contract does not exist.", async () => {
+            // * get the accounts.
+            const randomAccount = (await ethers.getSigners())[4];
+
+            await expect(escrowFactory.connect(randomAccount).approve())
+                .to.be.revertedWithCustomError(
+                    escrowFactory,
+                    "EscrowFactory__NoContractFound"
+                )
+                .withArgs(randomAccount.address);
+        });
+    });
 });
