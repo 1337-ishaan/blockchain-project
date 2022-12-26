@@ -13,24 +13,50 @@ describe("EscrowFactory", () => {
         escrowFactory = await ethers.getContract("EscrowFactory", deployer);
     });
 
-    it("should create a new escrow contract", async () => {
-        // * get the accounts.
-        const [deployer, arbiter, depositer, beneficiary] =
-            await ethers.getSigners();
+    describe("createNewEscrowContract", () => {
+        it("should create a new escrow contract", async () => {
+            // * get the accounts.
+            const [deployer, arbiter, depositer, beneficiary] =
+                await ethers.getSigners();
 
-        // * deploy the new escrow contract.
-        const tx: ContractTransaction = await escrowFactory
-            .connect(arbiter)
-            .createNewEscrowContract(depositer.address, beneficiary.address);
-        await tx.wait(1);
+            // * deploy the new escrow contract.
+            const tx: ContractTransaction = await escrowFactory
+                .connect(arbiter)
+                .createNewEscrowContract(
+                    depositer.address,
+                    beneficiary.address
+                );
+            await tx.wait(1);
 
-        // * `escrowArray` and `ownerToContractIndex` should be updated.
-        const length: BigNumber = await escrowFactory.getEscrowArrayLength();
-        const index: BigNumber = await escrowFactory.ownerToContractIndex(
-            arbiter.address
-        );
+            // * `escrowArray` and `ownerToContractIndex` should be updated.
+            const length: BigNumber =
+                await escrowFactory.getEscrowArrayLength();
+            const index: BigNumber = await escrowFactory.ownerToContractIndex(
+                arbiter.address
+            );
 
-        assert(length.toString() == "1");
-        assert(index.toString() == "1");
+            assert(length.toString() == "1");
+            assert(index.toString() == "1");
+        });
+
+        it("should not create another contract until first is open.", async () => {
+            // * get the accounts.
+            const [deployer, arbiter, depositer, beneficiary] =
+                await ethers.getSigners();
+
+            await expect(
+                escrowFactory
+                    .connect(arbiter)
+                    .createNewEscrowContract(
+                        depositer.address,
+                        beneficiary.address
+                    )
+            )
+                .to.be.revertedWithCustomError(
+                    escrowFactory,
+                    "EscrowFactory__EscrowContractExistWithThisAddress"
+                )
+                .withArgs(arbiter.address);
+        });
     });
 });
