@@ -9,9 +9,9 @@ error EscrowFactory__EscrowContractExistWithThisAddress(address owner);
 error EscrowFactory__NoContractFound(address owner);
 
 contract EscrowFactory {
-    mapping(address => uint) private ownerToContractIndex;
+    mapping(address => uint) public ownerToContractIndex;
 
-    Escrow[] private escrowArray;
+    Escrow[] public escrowArray;
 
     modifier isCreated() {
         // * contracts indexes starts from 1 so if mapping returns 0 it means the contract does not exist associate with this address.
@@ -58,5 +58,9 @@ contract EscrowFactory {
             revert EscrowFactory__AlreadyApproved(address(escrow));
         }
         escrow.approve();
+    }
+
+    function getEscrowArrayLength() external view returns (uint) {
+        return escrowArray.length;
     }
 }
