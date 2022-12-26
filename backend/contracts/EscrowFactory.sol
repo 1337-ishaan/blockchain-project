@@ -63,4 +63,15 @@ contract EscrowFactory {
     function getEscrowArrayLength() external view returns (uint) {
         return escrowArray.length;
     }
+
+    function isArbiterContractApproved(
+        address arbiter
+    ) external view returns (bool) {
+        // * get the index of contract with arbiter address.
+        uint index = ownerToContractIndex[arbiter];
+        // * get the contract from the escrow array.
+        Escrow escrow = escrowArray[index - 1];
+
+        return escrow.isApproved();
+    }
 }

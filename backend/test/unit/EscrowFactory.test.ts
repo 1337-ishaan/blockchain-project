@@ -1,5 +1,5 @@
 import { deployments, ethers, getNamedAccounts } from "hardhat";
-import { EscrowFactory } from "../../typechain-types";
+import { EscrowFactory, Escrow } from "../../typechain-types";
 import { assert, expect } from "chai";
 import { BigNumber, ContractTransaction } from "ethers";
 
@@ -71,6 +71,19 @@ describe("EscrowFactory", () => {
                     "EscrowFactory__NoContractFound"
                 )
                 .withArgs(randomAccount.address);
+        });
+
+        it("should approve the contract.", async () => {
+            // * get the accounts.
+            const [deployer, arbiter] = await ethers.getSigners();
+
+            const tx: ContractTransaction = await escrowFactory
+                .connect(arbiter)
+                .approve();
+            await tx.wait(1);
+
+            // * it should be true.
+            assert(escrowFactory.isArbiterContractApproved(arbiter.address));
         });
     });
 });
