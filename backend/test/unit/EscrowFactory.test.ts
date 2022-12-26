@@ -1,4 +1,5 @@
 import { deployments, ethers, getNamedAccounts } from "hardhat";
+const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 import { EscrowFactory, Escrow } from "../../typechain-types";
 import { assert, expect } from "chai";
 import { BigNumber, ContractTransaction } from "ethers";
@@ -84,6 +85,18 @@ describe("EscrowFactory", () => {
 
             // * it should be true.
             assert(escrowFactory.isArbiterContractApproved(arbiter.address));
+        });
+
+        it("should throw error if already approved.", async () => {
+            // * get the accounts.
+            const [deployer, arbiter] = await ethers.getSigners();
+
+            await expect(escrowFactory.connect(arbiter).approve())
+                .to.be.revertedWithCustomError(
+                    escrowFactory,
+                    "EscrowFactory__AlreadyApproved"
+                )
+                .withArgs(anyValue);
         });
     });
 });
