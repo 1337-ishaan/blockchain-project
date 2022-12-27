@@ -31,6 +31,10 @@ contract EscrowFactory {
         _;
     }
 
+    fallback() external payable {}
+
+    receive() external payable {}
+
     function createNewEscrowContract(
         address _depositor,
         address _beneficiary
