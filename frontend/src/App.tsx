@@ -1,7 +1,7 @@
-import { ConnectButton } from "@web3uikit/web3";
+import Header from "./components/Header";
 
 function App() {
-    return <ConnectButton />;
+    return <Header />;
 }
 
 export default App;
