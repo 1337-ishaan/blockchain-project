@@ -14,89 +14,109 @@ describe("EscrowFactory", () => {
         escrowFactory = await ethers.getContract("EscrowFactory", deployer);
     });
 
-    describe("createNewEscrowContract", () => {
-        it("should create a new escrow contract", async () => {
+    describe("check", () => {
+        it("should", async () => {
             // * get the accounts.
-            const [deployer, arbiter, depositer, beneficiary] =
+            const [deployer, depositer, beneficiary, arbiter] =
                 await ethers.getSigners();
 
             // * deploy the new escrow contract.
             const tx: ContractTransaction = await escrowFactory
-                .connect(arbiter)
-                .createNewEscrowContract(
-                    depositer.address,
-                    beneficiary.address
-                );
+                .connect(depositer)
+                .createNewEscrowContract(beneficiary.address, arbiter.address);
             await tx.wait(1);
 
-            // * `escrowArray` and `ownerToContractIndex` should be updated.
-            const length: BigNumber =
-                await escrowFactory.getEscrowArrayLength();
-            const index: BigNumber = await escrowFactory.ownerToContractIndex(
-                arbiter.address
-            );
-
-            assert(length.toString() == "1");
-            assert(index.toString() == "1");
-        });
-
-        it("should not create another contract until first is open.", async () => {
-            // * get the accounts.
-            const [deployer, arbiter, depositer, beneficiary] =
-                await ethers.getSigners();
-
-            await expect(
-                escrowFactory
-                    .connect(arbiter)
-                    .createNewEscrowContract(
-                        depositer.address,
-                        beneficiary.address
-                    )
-            )
-                .to.be.revertedWithCustomError(
-                    escrowFactory,
-                    "EscrowFactory__EscrowContractExistWithThisAddress"
-                )
-                .withArgs(arbiter.address);
+            const ts = await escrowFactory.getEscrowContracts();
+            const d: Escrow = await ethers.getContractAt("Escrow", ts[0]);
+            console.log(await d.depositor());
+            console.log(await d.beneficiary());
+            console.log(await d.arbiter());
         });
     });
 
-    describe("approve", async () => {
-        it("should throw error is contract does not exist.", async () => {
-            // * get the accounts.
-            const randomAccount = (await ethers.getSigners())[4];
+    // describe("createNewEscrowContract", () => {
+    //     it("should create a new escrow contract", async () => {
+    //         // * get the accounts.
+    //         const [deployer, arbiter, depositer, beneficiary] =
+    //             await ethers.getSigners();
 
-            await expect(escrowFactory.connect(randomAccount).approve())
-                .to.be.revertedWithCustomError(
-                    escrowFactory,
-                    "EscrowFactory__NoContractFound"
-                )
-                .withArgs(randomAccount.address);
-        });
+    //         // * deploy the new escrow contract.
+    //         const tx: ContractTransaction = await escrowFactory
+    //             .connect(arbiter)
+    //             .createNewEscrowContract(
+    //                 depositer.address,
+    //                 beneficiary.address
+    //             );
+    //         await tx.wait(1);
 
-        it("should approve the contract.", async () => {
-            // * get the accounts.
-            const [deployer, arbiter] = await ethers.getSigners();
+    //         // * `escrowArray` and `ownerToContractIndex` should be updated.
+    //         const length: BigNumber =
+    //             await escrowFactory.getEscrowArrayLength();
+    //         const index: BigNumber = await escrowFactory.ownerToContractIndex(
+    //             arbiter.address
+    //         );
 
-            const tx: ContractTransaction = await escrowFactory
-                .connect(arbiter)
-                .approve();
-            await tx.wait(1);
+    //         assert(length.toString() == "1");
+    //         assert(index.toString() == "1");
+    //     });
 
-            // * it should be true.
-            assert(escrowFactory.isArbiterContractApproved(arbiter.address));
-        });
+    //     it("should not create another contract until first is open.", async () => {
+    //         // * get the accounts.
+    //         const [deployer, arbiter, depositer, beneficiary] =
+    //             await ethers.getSigners();
 
-        it("should throw error if already approved.", async () => {
-            // * get the accounts.
-            const [deployer, arbiter] = await ethers.getSigners();
+    //         await expect(
+    //             escrowFactory
+    //                 .connect(arbiter)
+    //                 .createNewEscrowContract(
+    //                     depositer.address,
+    //                     beneficiary.address
+    //                 )
+    //         )
+    //             .to.be.revertedWithCustomError(
+    //                 escrowFactory,
+    //                 "EscrowFactory__EscrowContractExistWithThisAddress"
+    //             )
+    //             .withArgs(arbiter.address);
+    //     });
+    // });
 
-            await expect(escrowFactory.connect(arbiter).approve())
-                .to.be.revertedWithCustomError(
-                    escrowFactory,
-                    "EscrowFactory__AlreadyApproved"
-                )
-                .withArgs(anyValue);
-        });
-    });
+    // describe("approve", async () => {
+    //     it("should throw error is contract does not exist.", async () => {
+    //         // * get the accounts.
+    //         const randomAccount = (await ethers.getSigners())[4];
+
+    //         await expect(escrowFactory.connect(randomAccount).approve())
+    //             .to.be.revertedWithCustomError(
+    //                 escrowFactory,
+    //                 "EscrowFactory__NoContractFound"
+    //             )
+    //             .withArgs(randomAccount.address);
+    //     });
+
+    //     it("should approve the contract.", async () => {
+    //         // * get the accounts.
+    //         const [deployer, arbiter] = await ethers.getSigners();
+
+    //         const tx: ContractTransaction = await escrowFactory
+    //             .connect(arbiter)
+    //             .approve();
+    //         await tx.wait(1);
+
+    //         // * it should be true.
+    //         assert(escrowFactory.isArbiterContractApproved(arbiter.address));
+    //     });
+
+    //     it("should throw error if already approved.", async () => {
+    //         // * get the accounts.
+    //         const [deployer, arbiter] = await ethers.getSigners();
+
+    //         await expect(escrowFactory.connect(arbiter).approve())
+    //             .to.be.revertedWithCustomError(
+    //                 escrowFactory,
+    //                 "EscrowFactory__AlreadyApproved"
+    //             )
+    //             .withArgs(anyValue);
+    //     });
+    // });
 });

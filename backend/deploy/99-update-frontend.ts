@@ -8,7 +8,7 @@ const FRONTEND_CONTRACT_ADDRESSES_FILE_PATH: string =
 const FRONTEND_ABI_FILE_PATH: string = "../frontend/src/constants/abi.json";
 
 const updateFrontendFunction: DeployFunction = async () => {
-    if (process.env.UPDATE_FRONTEND) {
+    if (process.env.UPDATE_FRONTEND == "true") {
         console.log("Updating the frontend...");
         await updateContractAddresses();
         await updateAbi();
