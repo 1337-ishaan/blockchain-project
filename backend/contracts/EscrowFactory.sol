@@ -9,13 +9,13 @@ error EscrowFactory__EscrowContractExistWithThisAddress(address owner);
 error EscrowFactory__NoContractFound(address owner);
 
 contract EscrowFactory {
-    mapping(address => uint) public ownerToContractIndex;
+    mapping(address => uint) public arbiterToContractIndex;
 
     Escrow[] public escrowArray;
 
     modifier isCreated() {
         // * contracts indexes starts from 1 so if mapping returns 0 it means the contract does not exist associate with this address.
-        if (ownerToContractIndex[msg.sender] != 0) {
+        if (arbiterToContractIndex[msg.sender] != 0) {
             revert EscrowFactory__EscrowContractExistWithThisAddress(
                 msg.sender
             );
@@ -25,7 +25,7 @@ contract EscrowFactory {
 
     modifier isExist() {
         // * contracts indexes starts from 1 so if mapping returns 0 it means the contract does not exist associate with this address.
-        if (ownerToContractIndex[msg.sender] == 0) {
+        if (arbiterToContractIndex[msg.sender] == 0) {
             revert EscrowFactory__NoContractFound(msg.sender);
         }
         _;
@@ -36,24 +36,24 @@ contract EscrowFactory {
     receive() external payable {}
 
     function createNewEscrowContract(
-        address _depositor,
-        address _beneficiary
+        address _beneficiary,
+        address _arbiter
     ) external payable isCreated {
         // * create escrow contract.
         Escrow escrow = (new Escrow){value: msg.value}(
-            _depositor,
+            msg.sender,
             _beneficiary,
-            msg.sender
+            _arbiter
         );
         // * push the instance into array.
         escrowArray.push(escrow);
         // * map the index no of contract with arbiter address. Starting from index 1 onward because default value of uint is zero so this will help us later.
-        ownerToContractIndex[msg.sender] = escrowArray.length;
+        arbiterToContractIndex[_arbiter] = escrowArray.length;
     }
 
     function approve() external isExist {
         // * get the index of contract with arbiter address.
-        uint index = ownerToContractIndex[msg.sender];
+        uint index = arbiterToContractIndex[msg.sender];
         // * get the contract from the escrow array.
         Escrow escrow = escrowArray[index - 1];
         // * call the approve of escrow contract with this instance.
@@ -72,7 +72,7 @@ contract EscrowFactory {
         address arbiter
     ) external view returns (bool) {
         // * get the index of contract with arbiter address.
-        uint index = ownerToContractIndex[arbiter];
+        uint index = arbiterToContractIndex[arbiter];
         // * get the contract from the escrow array.
         Escrow escrow = escrowArray[index - 1];
 
