@@ -5,7 +5,12 @@ import { EscrowFactory } from "../typechain-types";
 
 const FRONTEND_CONTRACT_ADDRESSES_FILE_PATH: string =
     "../frontend/src/constants/contractAddresses.json";
-const FRONTEND_ABI_FILE_PATH: string = "../frontend/src/constants/abi.json";
+const FRONTEND_ESCROW_FACTORY_ABI_FILE_PATH: string =
+    "../frontend/src/constants/escrow-factory-abi.json";
+const FRONTEND_ESCROW_ABI_FILE_PATH =
+    "../frontend/src/constants/escrow-abi.json";
+const ESCROW_CONTRACT_ABI_LOCATION =
+    "artifacts/contracts/Escrow.sol/Escrow.json";
 
 const updateFrontendFunction: DeployFunction = async () => {
     if (process.env.UPDATE_FRONTEND == "true") {
@@ -20,12 +25,18 @@ async function updateAbi() {
     const escrowFactory = await ethers.getContract("EscrowFactory");
 
     fs.writeFileSync(
-        FRONTEND_ABI_FILE_PATH,
+        FRONTEND_ESCROW_FACTORY_ABI_FILE_PATH,
         JSON.parse(
             JSON.stringify(
                 escrowFactory.interface.format(ethers.utils.FormatTypes.json)
             )
         )
+    );
+
+    const data = fs.readFileSync(ESCROW_CONTRACT_ABI_LOCATION, "utf-8");
+    fs.writeFileSync(
+        FRONTEND_ESCROW_ABI_FILE_PATH,
+        JSON.stringify(JSON.parse(data).abi)
     );
 }
 
