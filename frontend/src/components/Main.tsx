@@ -57,7 +57,13 @@ function Main() {
         await createNewEscrowContract({
             onSuccess: (tx) => handleSuccess(tx as ContractTransaction),
             onError: (error) => {
-                console.log(error);
+                dispatch({
+                    type: "error",
+                    title: error.name,
+                    message: error.message,
+                    icon: <AiFillBell />,
+                    position: "topR",
+                });
             },
         });
     }
