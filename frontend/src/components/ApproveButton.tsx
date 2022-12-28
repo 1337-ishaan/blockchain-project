@@ -55,8 +55,8 @@ function ApproveButton({
         await tx.wait(1);
         dispatch({
             type: "success",
-            message: "Somebody messaged you",
-            title: "New Notification",
+            title: "Approved",
+            message: "Funds transfered to beneficiary address.",
             icon: <AiFillBell />,
             position: "topR",
         });
