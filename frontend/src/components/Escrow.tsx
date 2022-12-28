@@ -84,9 +84,30 @@ function Escrow({
                 </div>
                 <div className=" bg-white">
                     <h1 className="py-4 pl-12">{address}</h1>
-                    <h1 className="py-4 pl-12">{depositorAddress}</h1>
-                    <h1 className="py-4 pl-12">{beneficiaryAddress}</h1>
-                    <h1 className="py-4 pl-12">{arbiterAddress}</h1>
+                    <h1
+                        className={`py-4 pl-12 ${
+                            depositorAddress.toLowerCase() ==
+                                account?.toLowerCase() && "text-[#0D72C4]"
+                        }`}
+                    >
+                        {depositorAddress}
+                    </h1>
+                    <h1
+                        className={`py-4 pl-12 ${
+                            beneficiaryAddress.toLowerCase() ==
+                                account?.toLowerCase() && "text-[#0D72C4]"
+                        }`}
+                    >
+                        {beneficiaryAddress}
+                    </h1>
+                    <h1
+                        className={`py-4 pl-12 ${
+                            arbiterAddress.toLowerCase() ==
+                                account?.toLowerCase() && "text-[#0D72C4]"
+                        }`}
+                    >
+                        {arbiterAddress}
+                    </h1>
                     <h1 className="py-4 pl-12">
                         {balance}{" "}
                         <span>({ethers.utils.formatEther(balance)} ETH)</span>
