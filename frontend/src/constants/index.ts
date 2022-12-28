@@ -1,4 +1,5 @@
 import contractAddresses from "./contractAddresses.json";
-import abi from "./abi.json";
+import escrowAbi from "./escrow-abi.json";
+import escrowFactoryAbi from "./escrow-factory-abi.json";
 
-export { contractAddresses, abi };
+export { contractAddresses, escrowAbi, escrowFactoryAbi };

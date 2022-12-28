@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { useNotification } from "@web3uikit/core";
-import { BigNumber, ethers, ContractTransaction } from "ethers";
+import { ethers, ContractTransaction } from "ethers";
 
-import { contractAddresses, abi } from "../constants";
+import { contractAddresses, escrowFactoryAbi, escrowAbi } from "../constants";
 import { AiFillBell } from "react-icons/ai";
+import Escrow from "./Escrow";
 
 interface contractAddressesInterface {
     [key: string]: string[];
@@ -15,23 +16,23 @@ function Main() {
     const { isWeb3Enabled, chainId: chainIdHex } = useMoralis();
 
     const chainId: string = parseInt(chainIdHex!).toString();
-    const escrowContractAddress =
+    const escrowFactoryContractAddress =
         chainId in addresses ? addresses[chainId][0] : null;
 
-    const [escrowArrayLength, setEscrowArrayLength] = useState(0);
+    let [deployedEscrowContractsAddresses, setDeployedEscrowContractAddresses] =
+        useState<string[]>([]);
 
     const dispatch = useNotification();
 
-    const { runContractFunction: getEscrowArrayLength } = useWeb3Contract({
-        abi: abi,
-        contractAddress: escrowContractAddress!,
-        functionName: "getEscrowArrayLength",
-        params: {},
-    });
+    useEffect(() => {
+        if (isWeb3Enabled) {
+            updateInterface();
+        }
+    }, [isWeb3Enabled]);
 
     const { runContractFunction: createNewEscrowContract } = useWeb3Contract({
-        abi: abi,
-        contractAddress: escrowContractAddress!,
+        abi: escrowFactoryAbi,
+        contractAddress: escrowFactoryContractAddress!,
         functionName: "createNewEscrowContract",
         params: {
             _beneficiary: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
@@ -40,35 +41,20 @@ function Main() {
         msgValue: ethers.utils.parseEther("1").toString(),
     });
 
-    const { runContractFunction: approve } = useWeb3Contract({
-        abi: abi,
-        contractAddress: escrowContractAddress!,
-        functionName: "approve",
+    const { runContractFunction: getEscrowContracts } = useWeb3Contract({
+        abi: escrowFactoryAbi,
+        contractAddress: escrowFactoryContractAddress!,
+        functionName: "getEscrowContracts",
         params: {},
     });
 
-    useEffect(() => {
-        if (isWeb3Enabled) {
-            updateInterface();
-        }
-    }, [isWeb3Enabled]);
-
     async function updateInterface() {
-        const length = (await getEscrowArrayLength()) as BigNumber;
-        setEscrowArrayLength(Number(length));
+        const contracts = (await getEscrowContracts()) as string[];
+        setDeployedEscrowContractAddresses(contracts);
     }
 
     async function onCreateContractTap() {
         await createNewEscrowContract({
-            onSuccess: (tx) => handleSuccess(tx as ContractTransaction),
-            onError: (error) => {
-                console.log(error);
-            },
-        });
-    }
-
-    async function onApproveTap() {
-        await approve({
             onSuccess: (tx) => handleSuccess(tx as ContractTransaction),
             onError: (error) => {
                 console.log(error);
@@ -88,13 +74,24 @@ function Main() {
         updateInterface();
     }
 
-    return escrowContractAddress ? (
+    return escrowFactoryContractAddress ? (
         <div>
             <button onClick={onCreateContractTap}>
                 Create New Escrow Contract
             </button>
-            <button onClick={onApproveTap}>Approve</button>
-            <h1>Escrow contracts created: {escrowArrayLength}</h1>
+            {/* <button onClick={onApproveTap}>Approve</button> */}
+            <h1>
+                Escrow contracts created:{" "}
+                {deployedEscrowContractsAddresses.length}
+            </h1>
+            {deployedEscrowContractsAddresses.map((address, index) => (
+                <Escrow
+                    key={index}
+                    index={index}
+                    address={address}
+                    escrowFactoryContractAddress={escrowFactoryContractAddress}
+                />
+            ))}
         </div>
     ) : (
         <h3>No contract adddress found for escrow contract of this chain.</h3>
