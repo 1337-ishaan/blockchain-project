@@ -60,7 +60,9 @@ function CreateContract({
 
     return (
         <div className="bg-white px-24 py-8">
-            <h1 className="mb-10">Create New Escrow Contract</h1>
+            <h1 className="mb-10 text-2xl text-[#0D72C4] font-bold">
+                Create New Escrow Contract
+            </h1>
             <form
                 className="h-72 flex flex-col justify-between"
                 onSubmit={(event) => {
@@ -123,7 +125,9 @@ function CreateContract({
                     errorMessage="Invalid Value."
                     value={value}
                 />
-                <button>Create</button>
+                <button className="text-xl p-2 bg-[#0D72C4] text-white w-1/6 rounded-lg mx-auto">
+                    Create
+                </button>
             </form>
         </div>
     );
