@@ -50,7 +50,7 @@ function Main() {
                 escrowFactoryContractAddress={escrowFactoryContractAddress}
                 updateInterface={updateInterface}
             />
-            <h1>
+            <h1 className="my-4 mx-2 text-xl">
                 Escrow contracts created:{" "}
                 {deployedEscrowContractsAddresses.length}
             </h1>
