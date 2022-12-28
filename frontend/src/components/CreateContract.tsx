@@ -1,7 +1,7 @@
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import { contractAddresses, escrowFactoryAbi } from "../constants";
 import { ethers, ContractTransaction } from "ethers";
-import { Input, useNotification } from "@web3uikit/core";
+import { Button, Input, useNotification } from "@web3uikit/core";
 import { AiFillBell } from "react-icons/ai";
 import { useState } from "react";
 
@@ -115,7 +115,7 @@ function CreateContract({
                 errorMessage="Invalid Value."
                 value={value}
             />
-            <button>Create New Escrow Contract</button>
+            <Button type="submit" text="Create New Escrow Contract" />
         </form>
     );
 }
