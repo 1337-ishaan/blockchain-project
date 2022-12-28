@@ -45,7 +45,7 @@ function Main() {
     }
 
     return escrowFactoryContractAddress ? (
-        <div>
+        <div className="mx-24 my-8">
             <CreateContract
                 escrowFactoryContractAddress={escrowFactoryContractAddress}
                 updateInterface={updateInterface}

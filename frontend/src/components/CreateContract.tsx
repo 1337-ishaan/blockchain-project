@@ -59,64 +59,73 @@ function CreateContract({
     }
 
     return (
-        <form
-            onSubmit={(event) => {
-                event.preventDefault();
-                if (Number(value) <= 0) {
-                    dispatch({
-                        type: "warning",
-                        title: "Invalid Input",
-                        message: "Value should be greater than zero.",
-                        icon: <AiFillBell />,
-                        position: "topR",
-                    });
-                    return;
-                }
-                onCreateContractTap();
-            }}
-        >
-            <Input
-                label="Beneficiary Address"
-                name="beneficiaryAddress"
-                onChange={(event) => setBeneficiaryAddress(event.target.value)}
-                validation={{
-                    required: true,
-                    characterMaxLength: 42,
-                    characterMinLength: 42,
-                }}
-                errorMessage="Invalid Address."
-                value={beneficiaryAddress}
-            />
-            <Input
-                label="Arbiter Address"
-                name="arbiterAddress"
-                onChange={(event) => setArbiterAddress(event.target.value)}
-                validation={{
-                    required: true,
-                    characterMaxLength: 42,
-                    characterMinLength: 42,
-                }}
-                errorMessage="Invalid Address."
-                value={arbiterAddress}
-            />
-            <Input
-                label="Value (ETH)"
-                name="value"
-                type="number"
-                onChange={(event) => {
-                    const { value } = event.target;
-                    if (value) {
-                        setValue(value);
+        <div className="bg-white px-24 py-8">
+            <h1 className="mb-10">Create New Escrow Contract</h1>
+            <form
+                className="h-72 flex flex-col justify-between"
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    if (Number(value) <= 0) {
+                        dispatch({
+                            type: "warning",
+                            title: "Invalid Input",
+                            message: "Value should be greater than zero.",
+                            icon: <AiFillBell />,
+                            position: "topR",
+                        });
+                        return;
                     }
+                    onCreateContractTap();
                 }}
-                validation={{
-                    required: true,
-                }}
-                errorMessage="Invalid Value."
-                value={value}
-            />
-            <Button type="submit" text="Create New Escrow Contract" />
-        </form>
+            >
+                <Input
+                    width="auto"
+                    label="Beneficiary Address"
+                    name="beneficiaryAddress"
+                    onChange={(event) =>
+                        setBeneficiaryAddress(event.target.value)
+                    }
+                    validation={{
+                        required: true,
+                        characterMaxLength: 42,
+                        characterMinLength: 42,
+                    }}
+                    errorMessage="Invalid Address."
+                    value={beneficiaryAddress}
+                />
+                <Input
+                    width="auto"
+                    label="Arbiter Address"
+                    name="arbiterAddress"
+                    onChange={(event) => setArbiterAddress(event.target.value)}
+                    validation={{
+                        required: true,
+                        characterMaxLength: 42,
+                        characterMinLength: 42,
+                    }}
+                    errorMessage="Invalid Address."
+                    value={arbiterAddress}
+                />
+                <Input
+                    width="auto"
+                    label="Value (ETH)"
+                    name="value"
+                    type="number"
+                    onChange={(event) => {
+                        const { value } = event.target;
+                        if (value) {
+                            setValue(value);
+                        }
+                    }}
+                    validation={{
+                        required: true,
+                    }}
+                    errorMessage="Invalid Value."
+                    value={value}
+                />
+                <button>Create</button>
+            </form>
+        </div>
     );
 }
 
