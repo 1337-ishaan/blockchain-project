@@ -66,8 +66,8 @@ function Main() {
         await tx.wait(1);
         dispatch({
             type: "success",
-            message: "Somebody messaged you",
-            title: "New Notification",
+            title: "Success",
+            message: "New Escrow Contract Created.",
             icon: <AiFillBell />,
             position: "topR",
         });
@@ -79,7 +79,6 @@ function Main() {
             <button onClick={onCreateContractTap}>
                 Create New Escrow Contract
             </button>
-            {/* <button onClick={onApproveTap}>Approve</button> */}
             <h1>
                 Escrow contracts created:{" "}
                 {deployedEscrowContractsAddresses.length}
