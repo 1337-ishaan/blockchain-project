@@ -61,17 +61,29 @@ function Escrow({
     }, []);
 
     const component = (
-        <div>
-            <h1>{address}</h1>
-            <h1>{depositorAddress}</h1>
-            <h1>{beneficiaryAddress}</h1>
-            <h1>{arbiterAddress}</h1>
-            <ApproveButton
-                index={index}
-                escrowFactoryContractAddress={escrowFactoryContractAddress}
-                isApprovedValue={isApprovedValue}
-                setIsApprovedValue={setIsApprovedValue}
-            />
+        <div className="bg-white mb-4 p-8">
+            <div className="flex text-lg">
+                <div className="w-3/12 font-bold">
+                    <h1 className="py-4 pl-12">Contract Address</h1>
+                    <h1 className="py-4 pl-12">Depositor Address</h1>
+                    <h1 className="py-4 pl-12">Beneficiary Address</h1>
+                    <h1 className="py-4 pl-12">Arbiter Address</h1>
+                </div>
+                <div className=" bg-white">
+                    <h1 className="py-4 pl-12">{address}</h1>
+                    <h1 className="py-4 pl-12">{depositorAddress}</h1>
+                    <h1 className="py-4 pl-12">{beneficiaryAddress}</h1>
+                    <h1 className="py-4 pl-12">{arbiterAddress}</h1>
+                </div>
+            </div>
+            <div className="text-center mt-8">
+                <ApproveButton
+                    index={index}
+                    isApprovedValue={isApprovedValue}
+                    escrowFactoryContractAddress={escrowFactoryContractAddress}
+                    setIsApprovedValue={setIsApprovedValue}
+                />
+            </div>
         </div>
     );
 

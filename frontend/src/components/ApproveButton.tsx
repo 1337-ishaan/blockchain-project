@@ -84,7 +84,12 @@ function ApproveButton({
     return isApprovedValue ? (
         <p>✅ It's been approved.</p>
     ) : (
-        <Button onClick={onApproveTap} text="Approve" />
+        <button
+            onClick={onApproveTap}
+            className="text-sm p-2 bg-[#0D72C4] text-white w-1/12 rounded-lg mx-auto"
+        >
+            Approve
+        </button>
     );
 }
 
