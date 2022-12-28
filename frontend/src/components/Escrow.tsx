@@ -18,6 +18,7 @@ function Escrow({
     const [depositorAddress, setDepositorAddress] = useState("");
     const [beneficiaryAddress, setBeneficiaryAddress] = useState("");
     const [arbiterAddress, setArbiterAddress] = useState("");
+    const [isApprovedValue, setIsApprovedValue] = useState(false);
 
     const { runContractFunction: depositor } = useWeb3Contract({
         abi: escrowAbi,
@@ -40,11 +41,19 @@ function Escrow({
         params: {},
     });
 
+    const { runContractFunction: isApproved } = useWeb3Contract({
+        abi: escrowAbi,
+        contractAddress: address,
+        functionName: "isApproved",
+        params: {},
+    });
+
     useEffect(() => {
         (async () => {
             setDepositorAddress((await depositor()) as string);
             setBeneficiaryAddress((await beneficiary()) as string);
             setArbiterAddress((await arbiter()) as string);
+            setIsApprovedValue((await isApproved()) as boolean);
         })();
     }, []);
 
@@ -57,7 +66,8 @@ function Escrow({
             <ApproveButton
                 index={index}
                 escrowFactoryContractAddress={escrowFactoryContractAddress}
-                escrowAddress={address}
+                isApprovedValue={isApprovedValue}
+                setIsApprovedValue={setIsApprovedValue}
             />
         </div>
     );
