@@ -66,7 +66,10 @@ function Main() {
             ))}
         </div>
     ) : (
-        <h3>No contract adddress found for escrow contract of this chain.</h3>
+        <h3 className="mx-24 my-8 text-xl font-bold">
+            No contract adddress found for escrow contract for this network.
+            Supported networks are Hardhat Localhost and Ethereum Goerli Network.
+        </h3>
     );
 }
 

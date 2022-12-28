@@ -55,6 +55,9 @@ function CreateContract({
             icon: <AiFillBell />,
             position: "topR",
         });
+        setBeneficiaryAddress("");
+        setArbiterAddress("");
+        setValue("0");
         updateInterface();
     }
 
