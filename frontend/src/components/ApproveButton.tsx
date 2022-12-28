@@ -1,7 +1,7 @@
 import { useWeb3Contract } from "react-moralis";
 import { escrowFactoryAbi } from "../constants";
 import { ContractTransaction } from "ethers";
-import { useNotification } from "@web3uikit/core";
+import { Button, useNotification } from "@web3uikit/core";
 import { AiFillBell } from "react-icons/ai";
 import { Dispatch, SetStateAction } from "react";
 
@@ -84,7 +84,7 @@ function ApproveButton({
     return isApprovedValue ? (
         <p>✅ It's been approved.</p>
     ) : (
-        <button onClick={onApproveTap}>Approve</button>
+        <Button onClick={onApproveTap} text="Approve" />
     );
 }
 
