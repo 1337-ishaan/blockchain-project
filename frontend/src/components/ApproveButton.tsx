@@ -83,6 +83,14 @@ function ApproveButton({
                 icon: <AiFillBell />,
                 position: "topR",
             });
+        } else {
+            dispatch({
+                type: "error",
+                title: error.name,
+                message: error.message,
+                icon: <AiFillBell />,
+                position: "topR",
+            });
         }
     }
 
