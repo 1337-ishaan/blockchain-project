@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import ApproveButton from "./ApproveButton";
 import { FilterItem } from "../utils/filterItem";
+import { BigNumber, ethers } from "ethers";
 
 interface Props {
     address: string;
@@ -22,6 +23,7 @@ function Escrow({
     const [beneficiaryAddress, setBeneficiaryAddress] = useState("");
     const [arbiterAddress, setArbiterAddress] = useState("");
     const [isApprovedValue, setIsApprovedValue] = useState(false);
+    const [balance, setBalance] = useState("0");
 
     const { account } = useMoralis();
 
@@ -53,12 +55,20 @@ function Escrow({
         params: {},
     });
 
+    const { runContractFunction: getBalance } = useWeb3Contract({
+        abi: escrowAbi,
+        contractAddress: address,
+        functionName: "getBalance",
+        params: {},
+    });
+
     useEffect(() => {
         (async () => {
             setDepositorAddress((await depositor()) as string);
             setBeneficiaryAddress((await beneficiary()) as string);
             setArbiterAddress((await arbiter()) as string);
             setIsApprovedValue((await isApproved()) as boolean);
+            setBalance(((await getBalance()) as BigNumber).toString());
         })();
     }, []);
 
@@ -70,12 +80,17 @@ function Escrow({
                     <h1 className="py-4 pl-12">Depositor Address</h1>
                     <h1 className="py-4 pl-12">Beneficiary Address</h1>
                     <h1 className="py-4 pl-12">Arbiter Address</h1>
+                    <h1 className="py-4 pl-12">Value (ETH)</h1>
                 </div>
                 <div className=" bg-white">
                     <h1 className="py-4 pl-12">{address}</h1>
                     <h1 className="py-4 pl-12">{depositorAddress}</h1>
                     <h1 className="py-4 pl-12">{beneficiaryAddress}</h1>
                     <h1 className="py-4 pl-12">{arbiterAddress}</h1>
+                    <h1 className="py-4 pl-12">
+                        {balance}{" "}
+                        <span>({ethers.utils.formatEther(balance)} ETH)</span>
+                    </h1>
                 </div>
             </div>
             <div className="text-center mt-8">
@@ -102,7 +117,8 @@ function Escrow({
             <div></div>
         );
     } else if (filterItem == FilterItem.MyApproval) {
-        return arbiterAddress.toLowerCase() == account?.toLowerCase() && !isApprovedValue ? (
+        return arbiterAddress.toLowerCase() == account?.toLowerCase() &&
+            !isApprovedValue ? (
             component
         ) : (
             <div></div>
@@ -117,20 +133,6 @@ function Escrow({
     } else {
         return <div></div>;
     }
-
-    // return filterItem == FilterItem.All ? (
-    //     component
-    // ) : filterItem == FilterItem.Approved ? (
-    //     isApprovedValue ? (
-    //         component
-    //     ) : (
-    //         <div></div>
-    //     )
-    // ) : !isApprovedValue ? (
-    //     component
-    // ) : (
-    //     <div></div>
-    // );
 }
 
 export default Escrow;
