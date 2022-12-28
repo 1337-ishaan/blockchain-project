@@ -46,7 +46,7 @@ function ApproveButton({
         await approve({
             onSuccess: (tx) => handleSuccess(tx as ContractTransaction),
             onError: (error) => {
-                console.log(error);
+                handleError(error);
             },
         });
     }
@@ -61,6 +61,29 @@ function ApproveButton({
             position: "topR",
         });
         setIsApprovedValue(true);
+    }
+
+    function handleError(error: Error) {
+        if (error.message.includes("EscrowFactory__AlreadyApproved")) {
+            dispatch({
+                type: "error",
+                title: "Error",
+                message: "This contract is already approved.",
+                icon: <AiFillBell />,
+                position: "topR",
+            });
+        } else if (
+            error.message.includes("EscrowFactory__NotAnArbiterOfContract")
+        ) {
+            dispatch({
+                type: "error",
+                title: "Error",
+                message:
+                    "This is not an arbiter address of this contract, only arbiter can approve this agreement.",
+                icon: <AiFillBell />,
+                position: "topR",
+            });
+        }
     }
 
     return isApprovedValue ? (
