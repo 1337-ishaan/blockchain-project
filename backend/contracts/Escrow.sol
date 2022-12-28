@@ -27,4 +27,8 @@ contract Escrow {
         emit Approved(balance);
         isApproved = true;
     }
+
+    function getBalance() external view returns (uint) {
+        return address(this).balance;
+    }
 }
