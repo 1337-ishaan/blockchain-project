@@ -3,17 +3,20 @@ import { escrowAbi } from "../constants";
 import { useEffect, useState } from "react";
 
 import ApproveButton from "./ApproveButton";
+import { FilterItem } from "../utils/filterItem";
 
 interface Props {
     address: string;
     index: number;
     escrowFactoryContractAddress: string;
+    filterItem: FilterItem;
 }
 
 function Escrow({
     address,
     index,
     escrowFactoryContractAddress,
+    filterItem,
 }: Props): JSX.Element {
     const [depositorAddress, setDepositorAddress] = useState("");
     const [beneficiaryAddress, setBeneficiaryAddress] = useState("");
@@ -57,7 +60,7 @@ function Escrow({
         })();
     }, []);
 
-    return (
+    const component = (
         <div>
             <h1>{address}</h1>
             <h1>{depositorAddress}</h1>
@@ -70,6 +73,20 @@ function Escrow({
                 setIsApprovedValue={setIsApprovedValue}
             />
         </div>
+    );
+
+    return filterItem == FilterItem.All ? (
+        component
+    ) : filterItem == FilterItem.Approved ? (
+        isApprovedValue ? (
+            component
+        ) : (
+            <div></div>
+        )
+    ) : !isApprovedValue ? (
+        component
+    ) : (
+        <div></div>
     );
 }
 

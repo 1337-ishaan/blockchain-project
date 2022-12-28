@@ -3,9 +3,11 @@ import { useMoralis, useWeb3Contract } from "react-moralis";
 import { useNotification } from "@web3uikit/core";
 import { ethers, ContractTransaction } from "ethers";
 
-import { contractAddresses, escrowFactoryAbi, escrowAbi } from "../constants";
+import { contractAddresses, escrowFactoryAbi } from "../constants";
 import { AiFillBell } from "react-icons/ai";
 import Escrow from "./Escrow";
+import { FilterItem } from "../utils/filterItem";
+import Filter from "./Filter";
 
 interface contractAddressesInterface {
     [key: string]: string[];
@@ -14,6 +16,7 @@ interface contractAddressesInterface {
 function Main() {
     const addresses: contractAddressesInterface = contractAddresses;
     const { isWeb3Enabled, chainId: chainIdHex } = useMoralis();
+    const [filterItem, setFilterItem] = useState(FilterItem.All);
 
     const chainId: string = parseInt(chainIdHex!).toString();
     const escrowFactoryContractAddress =
@@ -89,12 +92,14 @@ function Main() {
                 Escrow contracts created:{" "}
                 {deployedEscrowContractsAddresses.length}
             </h1>
+            <Filter setFilterItem={setFilterItem} />
             {deployedEscrowContractsAddresses.map((address, index) => (
                 <Escrow
                     key={index}
                     index={index}
                     address={address}
                     escrowFactoryContractAddress={escrowFactoryContractAddress}
+                    filterItem={filterItem}
                 />
             ))}
         </div>
