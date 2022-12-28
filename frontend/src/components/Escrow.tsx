@@ -1,4 +1,4 @@
-import { useWeb3Contract } from "react-moralis";
+import { useMoralis, useWeb3Contract } from "react-moralis";
 import { escrowAbi } from "../constants";
 import { useEffect, useState } from "react";
 
@@ -22,6 +22,8 @@ function Escrow({
     const [beneficiaryAddress, setBeneficiaryAddress] = useState("");
     const [arbiterAddress, setArbiterAddress] = useState("");
     const [isApprovedValue, setIsApprovedValue] = useState(false);
+
+    const { account } = useMoralis();
 
     const { runContractFunction: depositor } = useWeb3Contract({
         abi: escrowAbi,
@@ -87,19 +89,48 @@ function Escrow({
         </div>
     );
 
-    return filterItem == FilterItem.All ? (
-        component
-    ) : filterItem == FilterItem.Approved ? (
-        isApprovedValue ? (
+    if (filterItem == FilterItem.All) {
+        return component;
+    } else if (filterItem == FilterItem.Approved) {
+        return isApprovedValue ? component : <div></div>;
+    } else if (filterItem == FilterItem.Unapproved) {
+        return !isApprovedValue ? component : <div></div>;
+    } else if (filterItem == FilterItem.MyCreated) {
+        return depositorAddress.toLowerCase() == account?.toLowerCase() ? (
             component
         ) : (
             <div></div>
-        )
-    ) : !isApprovedValue ? (
-        component
-    ) : (
-        <div></div>
-    );
+        );
+    } else if (filterItem == FilterItem.MyApproval) {
+        return arbiterAddress.toLowerCase() == account?.toLowerCase() && !isApprovedValue ? (
+            component
+        ) : (
+            <div></div>
+        );
+    } else if (filterItem == FilterItem.MyApproved) {
+        return arbiterAddress.toLowerCase() == account?.toLowerCase() &&
+            isApprovedValue ? (
+            component
+        ) : (
+            <div></div>
+        );
+    } else {
+        return <div></div>;
+    }
+
+    // return filterItem == FilterItem.All ? (
+    //     component
+    // ) : filterItem == FilterItem.Approved ? (
+    //     isApprovedValue ? (
+    //         component
+    //     ) : (
+    //         <div></div>
+    //     )
+    // ) : !isApprovedValue ? (
+    //     component
+    // ) : (
+    //     <div></div>
+    // );
 }
 
 export default Escrow;

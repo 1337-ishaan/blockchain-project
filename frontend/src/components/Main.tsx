@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMoralis, useWeb3Contract } from "react-moralis";
-import { useNotification } from "@web3uikit/core";
-import { ethers, ContractTransaction } from "ethers";
 
 import { contractAddresses, escrowFactoryAbi } from "../constants";
-import { AiFillBell } from "react-icons/ai";
 import Escrow from "./Escrow";
 import { FilterItem } from "../utils/filterItem";
 import Filter from "./Filter";
@@ -22,7 +19,6 @@ function Main() {
     const chainId: string = parseInt(chainIdHex!).toString();
     const escrowFactoryContractAddress =
         chainId in addresses ? addresses[chainId][0] : null;
-
     let [deployedEscrowContractsAddresses, setDeployedEscrowContractAddresses] =
         useState<string[]>([]);
 
@@ -45,7 +41,7 @@ function Main() {
     }
 
     return escrowFactoryContractAddress ? (
-        <div className="mx-24 my-8">
+        <div className="mx-24 my-8 mb-96">
             <CreateContract
                 escrowFactoryContractAddress={escrowFactoryContractAddress}
                 updateInterface={updateInterface}
@@ -68,7 +64,8 @@ function Main() {
     ) : (
         <h3 className="mx-24 my-8 text-xl font-bold">
             No contract adddress found for escrow contract for this network.
-            Supported networks are Hardhat Localhost and Ethereum Goerli Network.
+            Supported networks are Hardhat Localhost and Ethereum Goerli
+            Network.
         </h3>
     );
 }

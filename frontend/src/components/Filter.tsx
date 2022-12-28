@@ -28,6 +28,15 @@ function Filter({ setFilterItem }: Props) {
                         case "Unapproved":
                             setFilterItem(FilterItem.Unapproved);
                             break;
+                        case "My Created":
+                            setFilterItem(FilterItem.MyCreated);
+                            break;
+                        case "My Approval":
+                            setFilterItem(FilterItem.MyApproval);
+                            break;
+                        case "My Approved":
+                            setFilterItem(FilterItem.MyApproved);
+                            break;
                     }
                 }}
                 options={[
@@ -42,6 +51,18 @@ function Filter({ setFilterItem }: Props) {
                     {
                         id: "unapproved",
                         label: "Unapproved",
+                    },
+                    {
+                        id: "my_created",
+                        label: "My Created",
+                    },
+                    {
+                        id: "my_approval",
+                        label: "My Approval",
+                    },
+                    {
+                        id: "my_approved",
+                        label: "My Approved",
                     },
                 ]}
             />
