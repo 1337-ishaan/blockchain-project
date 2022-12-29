@@ -26,6 +26,10 @@ contract Escrow {
      * @notice This will be the boolean value which will let the caller know about the approval state of this contract.
      */
     bool public isApproved;
+    /**
+     * @notice This will be the balance that depositer will deposit into this contract for transfer.
+     */
+    uint256 private balance;
 
     /**
      * @notice This event will be emitted and contain the balance which will be transfered to beneficiary after approval by the arbiter of this contract.
@@ -46,24 +50,25 @@ contract Escrow {
         depositor = _depositor;
         beneficiary = _beneficiary;
         arbiter = _arbiter;
+        balance = msg.value;
     }
 
     /**
      * @notice This function will transfer the funds to beneficiary address after approval of arbiter and emit an Approval event.
      */
     function approve() external {
-        uint balance = address(this).balance;
-        (bool sent, ) = payable(beneficiary).call{value: balance}("");
+        uint _balance = address(this).balance;
+        (bool sent, ) = payable(beneficiary).call{value: _balance}("");
         require(sent, "Failed to send Ether");
         emit Approved(balance);
         isApproved = true;
     }
 
     /**
-     * @notice This function will return the balance of the contract.
+     * @notice This function will return the balance store in balance variable.
      * @return uint value in wei.
      */
     function getBalance() external view returns (uint) {
-        return address(this).balance;
+        return balance;
     }
 }
