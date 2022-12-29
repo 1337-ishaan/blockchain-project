@@ -1,7 +1,8 @@
-import { DeployFunction } from "hardhat-deploy/dist/types";
+import { DeployFunction, DeployResult } from "hardhat-deploy/dist/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { developmentChains } from "../helper-hardhat-config";
 import { network } from "hardhat";
+import verify from "../utils/verify";
 
 /**
  * * Important Notes
@@ -16,12 +17,20 @@ const deployEscrowFactory: DeployFunction = async (
     const { deploy } = hre.deployments;
     const { deployer } = await hre.getNamedAccounts();
 
-    await deploy("EscrowFactory", {
+    const escrowFactory: DeployResult = await deploy("EscrowFactory", {
         from: deployer,
         log: true,
         args: [],
         waitConfirmations: developmentChains.includes(network.name) ? 1 : 6,
     });
+
+    // * only verify on testnets or mainnets.
+    if (
+        !developmentChains.includes(network.name) &&
+        process.env.ETHERSCAN_API_KEY
+    ) {
+        await verify(escrowFactory.address, []);
+    }
 };
 
 export default deployEscrowFactory;
