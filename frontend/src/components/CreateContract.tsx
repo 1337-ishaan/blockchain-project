@@ -1,7 +1,7 @@
-import { useMoralis, useWeb3Contract } from "react-moralis";
-import { contractAddresses, escrowFactoryAbi } from "../constants";
+import { useWeb3Contract } from "react-moralis";
+import { escrowFactoryAbi } from "../constants";
 import { ethers, ContractTransaction } from "ethers";
-import { Button, Input, useNotification } from "@web3uikit/core";
+import { Input, useNotification } from "@web3uikit/core";
 import { AiFillBell } from "react-icons/ai";
 import { useState } from "react";
 
