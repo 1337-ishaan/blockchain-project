@@ -3,6 +3,8 @@ import { ethers, getNamedAccounts } from "hardhat";
 import { EscrowFactory } from "../typechain-types";
 import { ContractReceipt, ContractTransaction } from "ethers";
 
+const ESCROW_CONTRACT_INDEX = 0;
+
 const createFunction: () => Promise<void> = async () => {
     const { deployer } = await getNamedAccounts();
 
@@ -15,13 +17,13 @@ const createFunction: () => Promise<void> = async () => {
 
     const signers: SignerWithAddress[] = await ethers.getSigners();
 
-    const arbiter: SignerWithAddress = signers[1];
-    const depositer: SignerWithAddress = signers[2];
-    const beneficiary: SignerWithAddress = signers[3];
+    const depositer: SignerWithAddress = signers[1];
+    const beneficiary: SignerWithAddress = signers[2];
+    const arbiter: SignerWithAddress = signers[3];
 
     const tx: ContractTransaction = await escrowFactory
         .connect(arbiter)
-        .approve();
+        .approve(ESCROW_CONTRACT_INDEX);
 
     await tx.wait(1);
 

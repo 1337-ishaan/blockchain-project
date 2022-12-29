@@ -15,13 +15,13 @@ const createFunction: () => Promise<void> = async () => {
 
     const signers: SignerWithAddress[] = await ethers.getSigners();
 
-    const arbiter: SignerWithAddress = signers[1];
-    const depositer: SignerWithAddress = signers[2];
-    const beneficiary: SignerWithAddress = signers[3];
+    const depositer: SignerWithAddress = signers[1];
+    const beneficiary: SignerWithAddress = signers[2];
+    const arbiter: SignerWithAddress = signers[3];
 
     const tx: ContractTransaction = await escrowFactory
-        .connect(arbiter)
-        .createNewEscrowContract(depositer.address, beneficiary.address, {
+        .connect(depositer)
+        .createNewEscrowContract(beneficiary.address, arbiter.address, {
             value: ethers.utils.parseEther("1"),
         });
     await tx.wait(1);
